@@ -47,3 +47,22 @@ If group is not specified, the version refers to the **core** group.
 When using ControllerRevision and StatefulSet objects, apps/v1 API group is required.
 
 [Which Kubernetes apiVersion should I use?](https://matthewpalmer.net/kubernetes-app-developer/articles/kubernetes-apiversion-definition-guide.html)
+
+`kind`: what kind of object the document is describing
+
+`metadata > name`: a name for the object. If you edit the configuration and apply it, the current deployment will be updated based on its name.
+
+`selector`: used to match the ReplicaSet against a set of labels
+
+`matchLabels` (labels): matches a list of key-value pairs. LAbels don't provide uniqueness and are used to organise Pods or other resources (names and UID provide uniquess instead).
+
+after updating the replica instances to 4:
+
+```
+Events:
+  Type    Reason             Age   From                   Message
+  ----    ------             ----  ----                   -------
+  Normal  ScalingReplicaSet  50m   deployment-controller  Scaled up replica set nginx-deployment-66b6c48dd5 to 2
+  Normal  ScalingReplicaSet  10s   deployment-controller  Scaled up replica set nginx-deployment-66b6c48dd5 to 4
+```
+
