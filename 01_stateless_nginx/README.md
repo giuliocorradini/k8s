@@ -54,7 +54,7 @@ When using ControllerRevision and StatefulSet objects, apps/v1 API group is requ
 
 `selector`: used to match the ReplicaSet against a set of labels
 
-`matchLabels` (labels): matches a list of key-value pairs. LAbels don't provide uniqueness and are used to organise Pods or other resources (names and UID provide uniquess instead).
+`matchLabels` (labels): matches a list of key-value pairs. Labels don't provide uniqueness and are used to organise Pods or other resources (names and UID provide uniquess instead).
 
 after updating the replica instances to 4:
 
@@ -66,3 +66,84 @@ Events:
   Normal  ScalingReplicaSet  10s   deployment-controller  Scaled up replica set nginx-deployment-66b6c48dd5 to 4
 ```
 
+## Exposing the service
+
+_Reference_
+
+[Service - Official Docs](https://kubernetes.io/docs/concepts/services-networking/service/)
+
+Kubernetes can expose a set of pods as a network service on the host. To do such thing we need to "expose a deployment"
+thus creating a service.
+
+```bash
+kubectl expose deployment <deployment-name> --type=LoadBalancer --name=<service-name>
+```
+
+Services can be used to expose a set of pods to the outside world, or to another set of pods (such as a backend to a
+frontend worker).
+
+If we inspect running services:
+
+```bash
+kubectl get svc
+```
+
+we can see that our (nginx-deployment) service has a pending external IP address.
+
+Since we're running on minikube, if we start `minikube tunnel` pending IP addresses for LoadBalancer services
+are instantly resolved. _nginx-deployment_ is now exposed via 127.0.0.1
+
+N.B. minikube tunnel will ask for **root permits** when publishing on protected ports (1-1000),
+so don't forget to enter your password.
+
+```
+> kubectl describe svc nginx-deployment
+
+Name:                     nginx-deployment
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 app=nginx
+Type:                     LoadBalancer
+IP Families:              <none>
+IP:                       10.98.168.222
+IPs:                      10.98.168.222
+LoadBalancer Ingress:     127.0.0.1
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+NodePort:                 <unset>  31247/TCP
+Endpoints:                172.17.0.6:80,172.17.0.7:80,172.17.0.8:80 + 1 more...
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+```
+
+Note that Port is the exposed port via which you can reach the LoadBalancer.
+
+```bash
+curl http://127.0.0.1:80
+```
+
+## Cleanup
+
+1. Delete the service
+
+```bash
+kubectl delete svc nginx-deployment
+```
+
+2. Delete the deployment
+
+Otherwise it will start the next time you fire the cluster (minikube)
+
+```bash
+kubectl delete deployment nginx-deployment
+```
+
+3. Stop minikube
+
+```bash
+minikube stop
+```
+
+or shut down your cluster.
