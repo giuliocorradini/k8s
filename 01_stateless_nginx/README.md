@@ -2,7 +2,7 @@
 
 Goal: **deploy a stateless Nginx instance using Kuberenetes Deployment objects**
 
-## Deployment object
+## Deployment object
 
 A deployment describes a set of pods and how they should behave while running.
 
