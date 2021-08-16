@@ -26,6 +26,8 @@ start from the template, otherwise the new agent node will not connect.
 k3s agent --server https://<ip>:6443 --token <token> --node-name <nodename>
 ```
 
+[Building up k3s Cluster](https://dockerlabs.collabnix.com/beginners/install/raspberrypi3/setting-up-k3s-cluster.html)
+
 ## Automating with systemd
 
 We can automatically start k3s agent at startup by writing a systemd script. Server IP, token and node name
